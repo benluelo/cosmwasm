@@ -285,6 +285,7 @@ impl From<SubMsgResult> for Result<SubMsgResponse, String> {
 
 /// The information we get back from a successful sub message execution,
 /// with full Cosmos SDK events.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]
 #[cfg_attr(not(target_arch = "wasm32"), derive(schemars::JsonSchema))]
 pub struct SubMsgResponse {
     pub events: Vec<Event>,
