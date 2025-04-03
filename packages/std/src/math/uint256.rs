@@ -44,8 +44,11 @@ use super::num_consts::NumConsts;
 /// ]);
 /// assert_eq!(a, b);
 /// ```
-#[derive(Copy, Clone, Default, Debug, PartialEq, Eq, PartialOrd, Ord, schemars::JsonSchema)]
-pub struct Uint256(#[schemars(with = "String")] pub(crate) U256);
+#[derive(Copy, Clone, Default, Debug, PartialEq, Eq, PartialOrd, Ord)]
+#[cfg_attr(not(target_arch = "wasm32"), derive(schemars::JsonSchema))]
+pub struct Uint256(
+    #[cfg_attr(not(target_arch = "wasm32"), schemars(with = "String"))] pub(crate) U256,
+);
 
 impl_int_serde!(Uint256);
 forward_ref_partial_eq!(Uint256, Uint256);

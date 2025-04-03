@@ -1,4 +1,3 @@
-use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
 use crate::prelude::*;
@@ -60,7 +59,8 @@ use super::{Attribute, CosmosMsg, Empty, Event, SubMsg};
 ///     Ok(response)
 /// }
 /// ```
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]
+#[cfg_attr(not(target_arch = "wasm32"), derive(schemars::JsonSchema))]
 #[non_exhaustive]
 pub struct Response<T = Empty> {
     /// Optional list of messages to pass. These will be executed in order.

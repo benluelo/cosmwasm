@@ -63,20 +63,20 @@ derive_more = { version = "1.0.0-beta.6", default-features = false, features = [
     "debug",
 ] }
 hex = "0.4"
-schemars = { workspace = true }
 sha2 = "0.10.3"
 serde = { workspace = true, features = ["std"] }
 serde-json-wasm = { version = "1.0.1", default-features = false, features = [
     "std",
 ] }
 static_assertions = "1.1.0"
-thiserror = "1.0.26"
+thiserror = "2"
 rmp-serde = "1.3.0"
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
 bech32 = "0.11.0"
 cosmwasm-crypto = { version = "2.2.2", path = "../crypto" }
 rand_core = { version = "0.6.4", features = ["getrandom"] }
+schemars = { workspace = true }
 
 [dev-dependencies]
 cosmwasm-core = { path = "../core", version = "2.2.2" }

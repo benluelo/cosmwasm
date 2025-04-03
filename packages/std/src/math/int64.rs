@@ -33,8 +33,11 @@ use super::num_consts::NumConsts;
 /// let a = Int64::from(258i64);
 /// assert_eq!(a.i64(), 258);
 /// ```
-#[derive(Copy, Clone, Default, Debug, PartialEq, Eq, PartialOrd, Ord, schemars::JsonSchema)]
-pub struct Int64(#[schemars(with = "String")] pub(crate) i64);
+#[derive(Copy, Clone, Default, Debug, PartialEq, Eq, PartialOrd, Ord)]
+#[cfg_attr(not(target_arch = "wasm32"), derive(schemars::JsonSchema))]
+pub struct Int64(
+    #[cfg_attr(not(target_arch = "wasm32"), schemars(with = "String"))] pub(crate) i64,
+);
 
 impl_int_serde!(Int64);
 forward_ref_partial_eq!(Int64, Int64);

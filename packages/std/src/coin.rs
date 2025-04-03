@@ -1,12 +1,12 @@
 use core::{fmt, str::FromStr};
-use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
 use crate::prelude::*;
 use crate::CoinFromStrError;
 use crate::Uint128;
 
-#[derive(Serialize, Deserialize, Clone, Default, PartialEq, Eq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Default, PartialEq, Eq)]
+#[cfg_attr(not(target_arch = "wasm32"), derive(schemars::JsonSchema))]
 pub struct Coin {
     pub denom: String,
     pub amount: Uint128,

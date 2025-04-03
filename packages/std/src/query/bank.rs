@@ -1,4 +1,3 @@
-use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
 use crate::Coin;
@@ -11,7 +10,8 @@ use crate::{Binary, DenomMetadata};
 use super::query_response::QueryResponseType;
 
 #[non_exhaustive]
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]
+#[cfg_attr(not(target_arch = "wasm32"), derive(schemars::JsonSchema))]
 #[serde(rename_all = "snake_case")]
 pub enum BankQuery {
     /// This calls into the native bank module for querying the total supply of one denomination.
@@ -37,7 +37,8 @@ pub enum BankQuery {
     AllDenomMetadata { pagination: Option<PageRequest> },
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]
+#[cfg_attr(not(target_arch = "wasm32"), derive(schemars::JsonSchema))]
 #[serde(rename_all = "snake_case")]
 #[non_exhaustive]
 pub struct SupplyResponse {
@@ -50,7 +51,8 @@ impl_response_constructor!(SupplyResponse, amount: Coin);
 
 impl QueryResponseType for SupplyResponse {}
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]
+#[cfg_attr(not(target_arch = "wasm32"), derive(schemars::JsonSchema))]
 #[serde(rename_all = "snake_case")]
 #[non_exhaustive]
 pub struct BalanceResponse {
@@ -63,7 +65,8 @@ impl_response_constructor!(BalanceResponse, amount: Coin);
 
 impl QueryResponseType for BalanceResponse {}
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]
+#[cfg_attr(not(target_arch = "wasm32"), derive(schemars::JsonSchema))]
 #[serde(rename_all = "snake_case")]
 #[non_exhaustive]
 pub struct AllBalanceResponse {
@@ -75,7 +78,8 @@ impl_response_constructor!(AllBalanceResponse, amount: Vec<Coin>);
 
 impl QueryResponseType for AllBalanceResponse {}
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]
+#[cfg_attr(not(target_arch = "wasm32"), derive(schemars::JsonSchema))]
 #[serde(rename_all = "snake_case")]
 #[non_exhaustive]
 pub struct DenomMetadataResponse {
@@ -87,7 +91,8 @@ impl_response_constructor!(DenomMetadataResponse, metadata: DenomMetadata);
 
 impl QueryResponseType for DenomMetadataResponse {}
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]
+#[cfg_attr(not(target_arch = "wasm32"), derive(schemars::JsonSchema))]
 #[serde(rename_all = "snake_case")]
 #[non_exhaustive]
 pub struct AllDenomMetadataResponse {
