@@ -1,5 +1,5 @@
-use alloc::vec::Vec;
-use core::{any::TypeId, marker::PhantomData, mem, ops::Deref, slice};
+use alloc::{boxed::Box, vec::Vec};
+use core::{any::TypeId, marker::PhantomData, mem, ops::Deref, ptr, slice};
 
 /// This trait is used to indicate whether a region is borrowed or owned
 pub trait Ownership: 'static {}

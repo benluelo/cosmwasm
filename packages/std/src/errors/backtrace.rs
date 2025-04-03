@@ -13,7 +13,7 @@ impl BT {
         #[cfg(feature = "std")]
         {
             #[cfg(target_arch = "wasm32")]
-            return BT(Box::new(std::backtrace::Backtrace::disabled()));
+            return BT(Box::new(Stub));
             #[cfg(not(target_arch = "wasm32"))]
             return BT(Box::new(std::backtrace::Backtrace::capture()));
         }

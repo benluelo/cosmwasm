@@ -6,6 +6,7 @@
 use core::any::type_name;
 use serde::{de::DeserializeOwned, Serialize};
 
+use crate::prelude::*;
 use crate::Binary;
 use crate::{StdError, StdResult};
 
