@@ -1,4 +1,3 @@
-use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
 use crate::ibc::IbcChannel;
@@ -8,7 +7,8 @@ use crate::prelude::*;
 /// IBC connection.
 /// Most of these will return errors if the contract is not "ibc enabled".
 #[non_exhaustive]
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]
+#[cfg_attr(not(target_arch = "wasm32"), derive(schemars::JsonSchema))]
 #[serde(rename_all = "snake_case")]
 pub enum IbcQuery {
     /// Gets the Port ID the current contract is bound to.
@@ -42,7 +42,8 @@ pub enum IbcQuery {
     },
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]
+#[cfg_attr(not(target_arch = "wasm32"), derive(schemars::JsonSchema))]
 #[non_exhaustive]
 pub struct PortIdResponse {
     pub port_id: String,
@@ -50,7 +51,8 @@ pub struct PortIdResponse {
 
 impl_response_constructor!(PortIdResponse, port_id: String);
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]
+#[cfg_attr(not(target_arch = "wasm32"), derive(schemars::JsonSchema))]
 #[non_exhaustive]
 pub struct ListChannelsResponse {
     pub channels: Vec<IbcChannel>,
@@ -58,7 +60,8 @@ pub struct ListChannelsResponse {
 
 impl_response_constructor!(ListChannelsResponse, channels: Vec<IbcChannel>);
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]
+#[cfg_attr(not(target_arch = "wasm32"), derive(schemars::JsonSchema))]
 #[non_exhaustive]
 pub struct ChannelResponse {
     pub channel: Option<IbcChannel>,
@@ -66,7 +69,8 @@ pub struct ChannelResponse {
 
 impl_response_constructor!(ChannelResponse, channel: Option<IbcChannel>);
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]
+#[cfg_attr(not(target_arch = "wasm32"), derive(schemars::JsonSchema))]
 #[non_exhaustive]
 pub struct FeeEnabledChannelResponse {
     pub fee_enabled: bool,

@@ -1,10 +1,10 @@
-use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
 use crate::prelude::*;
 
 /// Replicates the cosmos-sdk bank module Metadata type
-#[derive(Serialize, Deserialize, Clone, Default, Debug, PartialEq, Eq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Default, Debug, PartialEq, Eq)]
+#[cfg_attr(not(target_arch = "wasm32"), derive(schemars::JsonSchema))]
 pub struct DenomMetadata {
     pub description: String,
     pub denom_units: Vec<DenomUnit>,
@@ -17,7 +17,8 @@ pub struct DenomMetadata {
 }
 
 /// Replicates the cosmos-sdk bank module DenomUnit type
-#[derive(Serialize, Deserialize, Clone, Default, Debug, PartialEq, Eq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Default, Debug, PartialEq, Eq)]
+#[cfg_attr(not(target_arch = "wasm32"), derive(schemars::JsonSchema))]
 pub struct DenomUnit {
     pub denom: String,
     pub exponent: u32,

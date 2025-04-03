@@ -1,5 +1,4 @@
 use crate::__internal::forward_ref_partial_eq;
-use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
 use crate::prelude::*;
@@ -12,7 +11,8 @@ use crate::prelude::*;
 ///
 /// [*Cosmos SDK* event]: https://docs.cosmos.network/main/learn/advanced/events
 /// [*Cosmos SDK* StringEvent]: https://github.com/cosmos/cosmos-sdk/blob/v0.42.5/proto/cosmos/base/abci/v1beta1/abci.proto#L56-L70
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]
+#[cfg_attr(not(target_arch = "wasm32"), derive(schemars::JsonSchema))]
 #[non_exhaustive]
 pub struct Event {
     /// The event type. This is renamed to "ty" because "type" is reserved in Rust. This sucks, we know.
@@ -60,7 +60,8 @@ impl Event {
 }
 
 /// An key value pair that is used in the context of event attributes in logs
-#[derive(Serialize, Deserialize, Clone, Default, Debug, PartialEq, Eq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Default, Debug, PartialEq, Eq)]
+#[cfg_attr(not(target_arch = "wasm32"), derive(schemars::JsonSchema))]
 pub struct Attribute {
     pub key: String,
     pub value: String,

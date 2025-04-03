@@ -14,8 +14,9 @@ use crate::{
 ///
 /// This is only needed as serde-json-{core,wasm} has a horrible encoding for Vec<u8>.
 /// See also <https://github.com/CosmWasm/cosmwasm/blob/main/docs/MESSAGE_TYPES.md>.
-#[derive(Clone, Default, PartialEq, Eq, Hash, PartialOrd, Ord, schemars::JsonSchema)]
-pub struct Binary(#[schemars(with = "String")] Vec<u8>);
+#[derive(Clone, Default, PartialEq, Eq, Hash, PartialOrd, Ord)]
+#[cfg_attr(not(target_arch = "wasm32"), derive(schemars::JsonSchema))]
+pub struct Binary(#[cfg_attr(not(target_arch = "wasm32"), schemars(with = "String"))] Vec<u8>);
 
 impl Binary {
     /// Creates a new `Binary` containing the given data.

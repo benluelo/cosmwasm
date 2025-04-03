@@ -1,4 +1,3 @@
-use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
 use crate::{Addr, Binary, Timestamp};
@@ -6,7 +5,8 @@ use crate::{Addr, Binary, Timestamp};
 /// Payload value should be encoded in a format defined by the channel version,
 /// and the module on the other side should know how to parse this.
 #[non_exhaustive]
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]
+#[cfg_attr(not(target_arch = "wasm32"), derive(schemars::JsonSchema))]
 #[serde(rename_all = "snake_case")]
 pub struct Ibc2Payload {
     /// The port id on the chain where the packet is sent from.
@@ -24,7 +24,8 @@ pub struct Ibc2Payload {
 /// These are messages in the IBC lifecycle using the new Ibc2 approach.
 /// Only usable by Ibc2-enabled contracts
 #[non_exhaustive]
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]
+#[cfg_attr(not(target_arch = "wasm32"), derive(schemars::JsonSchema))]
 #[serde(rename_all = "snake_case")]
 pub enum Ibc2Msg {
     /// Sends an Ibc2 packet with given payloads over the existing channel.
@@ -36,7 +37,8 @@ pub enum Ibc2Msg {
 }
 
 /// The message that is passed into `ibc2_packet_receive`
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]
+#[cfg_attr(not(target_arch = "wasm32"), derive(schemars::JsonSchema))]
 #[non_exhaustive]
 pub struct Ibc2PacketReceiveMsg {
     pub payload: Ibc2Payload,

@@ -1,7 +1,6 @@
 // needed because the derive macros on QueryRequest use the deprecated `Stargate` variant
 #![allow(deprecated)]
 
-use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
 use crate::prelude::*;
@@ -41,7 +40,8 @@ pub use staking::*;
 pub use wasm::*;
 
 #[non_exhaustive]
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]
+#[cfg_attr(not(target_arch = "wasm32"), derive(schemars::JsonSchema))]
 #[serde(rename_all = "snake_case")]
 pub enum QueryRequest<C = Empty> {
     Bank(BankQuery),
@@ -84,7 +84,8 @@ pub enum QueryRequest<C = Empty> {
 /// To find the path, as well as the request and response types,
 /// you can query the chain's gRPC endpoint using a tool like
 /// [grpcurl](https://github.com/fullstorydev/grpcurl).
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]
+#[cfg_attr(not(target_arch = "wasm32"), derive(schemars::JsonSchema))]
 pub struct GrpcQuery {
     /// The fully qualified endpoint path used for routing.
     /// It follows the format `/service_path/method_name`,

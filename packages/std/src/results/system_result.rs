@@ -1,5 +1,4 @@
 use core::fmt;
-use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
 use crate::prelude::*;
@@ -30,7 +29,8 @@ use crate::SystemError;
 /// let result: SystemResult<Binary> = SystemResult::Err(error);
 /// assert_eq!(to_json_string(&result).unwrap(), r#"{"error":{"unknown":{}}}"#);
 /// ```
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]
+#[cfg_attr(not(target_arch = "wasm32"), derive(schemars::JsonSchema))]
 #[serde(rename_all = "snake_case")]
 pub enum SystemResult<S> {
     Ok(S),

@@ -29,7 +29,8 @@ pub struct ExecuteMsg {
 pub enum QueryMsg {}
 
 pub const CONFIG_KEY: &[u8] = b"config";
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]
+#[cfg_attr(not(target_arch = "wasm32"), derive(schemars::JsonSchema))]
 pub struct State {
     pub order: Vec<u8>,
 }

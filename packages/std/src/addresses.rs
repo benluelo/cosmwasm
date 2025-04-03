@@ -1,7 +1,6 @@
 use alloc::{borrow::Cow, string::String, vec::Vec};
 use core::fmt;
 use core::ops::Deref;
-use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use sha2::{
     digest::{Digest, Update},
@@ -27,9 +26,8 @@ use crate::{HexBinary, __internal::forward_ref_partial_eq};
 /// This type is immutable. If you really need to mutate it (Really? Are you sure?), create
 /// a mutable copy using `let mut mutable = Addr::to_string()` and operate on that `String`
 /// instance.
-#[derive(
-    Serialize, Deserialize, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, JsonSchema,
-)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(not(target_arch = "wasm32"), derive(schemars::JsonSchema))]
 pub struct Addr(String);
 
 forward_ref_partial_eq!(Addr, Addr);
@@ -129,7 +127,8 @@ impl<'a> From<&'a Addr> for Cow<'a, Addr> {
 /// addition to that there are many unsafe ways to convert any binary data into an instance.
 /// So the type should be treated as a marker to express the intended data type, not as
 /// a validity guarantee of any sort.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, Hash, schemars::JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
+#[cfg_attr(not(target_arch = "wasm32"), derive(schemars::JsonSchema))]
 pub struct CanonicalAddr(Binary);
 
 /// Implement `CanonicalAddr == Binary`

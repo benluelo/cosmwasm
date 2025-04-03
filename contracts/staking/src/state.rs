@@ -1,6 +1,5 @@
 use std::any::type_name;
 
-use schemars::JsonSchema;
 use serde::{de::DeserializeOwned, Deserialize, Serialize};
 
 use cosmwasm_std::{
@@ -43,7 +42,8 @@ pub fn load_map(storage: &dyn Storage, prefix: &[u8], key: &CanonicalAddr) -> St
 }
 
 /// Investment info is fixed at initialization, and is used to control the function of the contract
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]
+#[cfg_attr(not(target_arch = "wasm32"), derive(schemars::JsonSchema))]
 pub struct InvestmentInfo {
     /// owner created the contract and takes a cut
     pub owner: Addr,
@@ -60,7 +60,8 @@ pub struct InvestmentInfo {
 }
 
 /// Info to display the derivative token in a UI
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]
+#[cfg_attr(not(target_arch = "wasm32"), derive(schemars::JsonSchema))]
 pub struct TokenInfo {
     /// name of the derivative token
     pub name: String,
@@ -71,7 +72,8 @@ pub struct TokenInfo {
 }
 
 /// Supply is dynamic and tracks the current supply of staked and ERC20 tokens.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, Default, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, Default)]
+#[cfg_attr(not(target_arch = "wasm32"), derive(schemars::JsonSchema))]
 pub struct Supply {
     /// issued is how many derivative tokens this contract has issued
     pub issued: Uint128,
