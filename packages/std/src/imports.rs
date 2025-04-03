@@ -1,4 +1,8 @@
-use alloc::vec::Vec;
+use alloc::{
+    boxed::Box,
+    string::{String, ToString},
+    vec::Vec,
+};
 use core::ptr;
 
 use crate::import_helpers::{from_high_half, from_low_half};
