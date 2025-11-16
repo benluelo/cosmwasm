@@ -12,9 +12,10 @@ readme = "README.md"
 features = ["abort", "cosmwasm_2_2", "staking", "stargate"]
 
 [features]
-default = ["iterator", "std"]
 # abort used to enable the panic handler that hands a nice error message back to the host.
 # The feature is now deprecated and the panic handler is always enabled.
+default = ["abort", "iterator", "std"]
+schemars = ["dep:schemars"]
 abort = []
 std = []
 # iterator allows us to iterate over all DB items in a given range
@@ -63,7 +64,7 @@ derive_more = { version = "1.0.0-beta.6", default-features = false, features = [
     "debug",
 ] }
 hex = "0.4"
-schemars = { workspace = true }
+schemars = { workspace = true, optional = true }
 sha2 = "0.10.3"
 serde = { workspace = true, features = ["std"] }
 serde-json-wasm = { version = "1.0.1", default-features = false, features = [
@@ -94,3 +95,4 @@ proptest = { version = "1.5.0", default-features = false, features = [
     "std",
 ] }
 serde_json = "1.0.81"
+cosmwasm-std = { path = ".", features = ["schemars"] }

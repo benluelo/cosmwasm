@@ -41,8 +41,9 @@ use super::num_consts::NumConsts;
 /// let c = Uint128::from(70u32);
 /// assert_eq!(c.u128(), 70);
 /// ```
-#[derive(Copy, Clone, Default, Debug, PartialEq, Eq, PartialOrd, Ord, schemars::JsonSchema)]
-pub struct Uint128(#[schemars(with = "String")] pub(crate) u128);
+#[derive(Copy, Clone, Default, Debug, PartialEq, Eq, PartialOrd, Ord)]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
+pub struct Uint128(#[cfg_attr(feature = "schemars", schemars(with = "String"))] pub(crate) u128);
 
 impl_int_serde!(Uint128);
 forward_ref_partial_eq!(Uint128, Uint128);

@@ -21,8 +21,9 @@ use super::Int128;
 ///
 /// The greatest possible value that can be represented is 170141183460469231731.687303715884105727 (which is (2^127 - 1) / 10^18)
 /// and the smallest is -170141183460469231731.687303715884105728 (which is -2^127 / 10^18).
-#[derive(Copy, Clone, Default, PartialEq, Eq, PartialOrd, Ord, schemars::JsonSchema)]
-pub struct SignedDecimal(#[schemars(with = "String")] Int128);
+#[derive(Copy, Clone, Default, PartialEq, Eq, PartialOrd, Ord)]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
+pub struct SignedDecimal(#[cfg_attr(feature = "schemars", schemars(with = "String"))] Int128);
 
 forward_ref_partial_eq!(SignedDecimal, SignedDecimal);
 

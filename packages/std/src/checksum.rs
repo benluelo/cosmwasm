@@ -1,6 +1,5 @@
 use core::fmt;
 
-use schemars::JsonSchema;
 use serde::{de, ser, Deserialize, Deserializer, Serialize};
 use sha2::{Digest, Sha256};
 use thiserror::Error;
@@ -13,8 +12,9 @@ use crate::{StdError, StdResult};
 ///
 /// This is often referred to as "code ID" in go-cosmwasm, even if code ID
 /// usually refers to an auto-incrementing number.
-#[derive(JsonSchema, Debug, Copy, Clone, PartialEq, Eq, Hash)]
-pub struct Checksum(#[schemars(with = "String")] [u8; 32]);
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
+pub struct Checksum(#[cfg_attr(feature = "schemars", schemars(with = "String"))] [u8; 32]);
 
 impl Checksum {
     pub fn generate(wasm: &[u8]) -> Self {

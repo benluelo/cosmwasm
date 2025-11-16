@@ -1,7 +1,6 @@
 //! This module contains types for the IBC callbacks defined in
 //! [ADR-8](https://github.com/cosmos/ibc-go/blob/main/docs/architecture/adr-008-app-caller-cbs.md).
 
-use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
 use crate::{Addr, IbcAcknowledgement, IbcPacket, Uint64};
@@ -57,7 +56,8 @@ use crate::{Addr, IbcAcknowledgement, IbcPacket, Uint64};
 ///     })).unwrap()),
 /// };
 /// ```
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct IbcCallbackRequest {
     // using private fields to force use of the constructors
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -92,7 +92,8 @@ impl IbcCallbackRequest {
     }
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct IbcSrcCallback {
     /// The source chain address that should receive the callback.
     /// For CosmWasm contracts, this *must* be `env.contract.address`.
@@ -103,7 +104,8 @@ pub struct IbcSrcCallback {
     pub gas_limit: Option<Uint64>,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct IbcDstCallback {
     /// The destination chain address that should receive the callback.
     pub address: String,
@@ -126,14 +128,16 @@ pub struct IbcDstCallback {
 /// - You have to add serialized [`IbcCallbackRequest`] to a specific field of the message.
 ///   For `IbcMsg::Transfer`, this is the `memo` field and it needs to be json-encoded.
 /// - The receiver of the callback must also be the sender of the message.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 #[serde(rename_all = "snake_case")]
 pub enum IbcSourceCallbackMsg {
     Acknowledgement(IbcAckCallbackMsg),
     Timeout(IbcTimeoutCallbackMsg),
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 #[non_exhaustive]
 pub struct IbcAckCallbackMsg {
     pub acknowledgement: IbcAcknowledgement,
@@ -155,7 +159,8 @@ impl IbcAckCallbackMsg {
     }
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 #[non_exhaustive]
 pub struct IbcTimeoutCallbackMsg {
     pub packet: IbcPacket,
@@ -187,7 +192,8 @@ impl IbcTimeoutCallbackMsg {
 /// - The IBC application in the destination chain must have support for the callbacks middleware.
 /// - You have to add serialized [`IbcCallbackRequest`] to a specific field of the message.
 ///   For `IbcMsg::Transfer`, this is the `memo` field and it needs to be json-encoded.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]
+#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 pub struct IbcDestinationCallbackMsg {
     pub packet: IbcPacket,
     pub ack: IbcAcknowledgement,
