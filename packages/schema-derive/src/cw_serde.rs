@@ -49,11 +49,10 @@ pub fn cw_serde_impl(options: Options, input: DeriveInput) -> syn::Result<Derive
             ::std::clone::Clone,
             ::std::fmt::Debug,
             ::std::cmp::PartialEq,
-            #crate_path::schemars::JsonSchema
         )]
+        #[cfg_attr(feature = "schemars", #crate_path::schemars::JsonSchema, schemars(crate = #schemars_path))]
         #[allow(clippy::derive_partial_eq_without_eq)] // Allow users of `#[cw_serde]` to not implement Eq without clippy complaining
         #[serde(crate = #serde_path)]
-        #[schemars(crate = #schemars_path)]
     };
 
     match input.data {

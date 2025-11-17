@@ -5,7 +5,7 @@ use derive_more::Debug;
 use serde::{Deserialize, Serialize};
 
 use crate::coin::Coin;
-#[cfg(feature = "stargate")]
+#[cfg(feature = "ibc")]
 use crate::ibc::IbcMsg;
 use crate::prelude::*;
 #[cfg(all(feature = "stargate", feature = "cosmwasm_1_2"))]
@@ -82,7 +82,7 @@ pub enum CosmosMsg<T = Empty> {
     /// a chain running CosmWasm < 2.0 cannot process this.
     #[cfg(feature = "cosmwasm_2_0")]
     Any(AnyMsg),
-    #[cfg(feature = "stargate")]
+    #[cfg(feature = "ibc")]
     Ibc(IbcMsg),
     Wasm(WasmMsg),
     #[cfg(feature = "stargate")]
@@ -106,7 +106,7 @@ impl<T> CosmosMsg<T> {
             CosmosMsg::Stargate { type_url, value } => CosmosMsg::Stargate { type_url, value },
             #[cfg(feature = "cosmwasm_2_0")]
             CosmosMsg::Any(msg) => CosmosMsg::Any(msg),
-            #[cfg(feature = "stargate")]
+            #[cfg(feature = "ibc")]
             CosmosMsg::Ibc(msg) => CosmosMsg::Ibc(msg),
             CosmosMsg::Wasm(msg) => CosmosMsg::Wasm(msg),
             #[cfg(feature = "stargate")]
@@ -482,7 +482,7 @@ impl<T> From<WasmMsg> for CosmosMsg<T> {
     }
 }
 
-#[cfg(feature = "stargate")]
+#[cfg(feature = "ibc")]
 impl<T> From<IbcMsg> for CosmosMsg<T> {
     fn from(msg: IbcMsg) -> Self {
         CosmosMsg::Ibc(msg)
@@ -657,7 +657,8 @@ mod tests {
 
     #[test]
     fn wasm_msg_debug_decodes_binary_string_when_possible() {
-        #[cosmwasm_schema::cw_serde]
+        #[derive(Debug, Serialize, Deserialize)]
+        #[serde(rename_all = "snake_case")]
         enum ExecuteMsg {
             Mint { coin: Coin },
         }

@@ -28,6 +28,7 @@ macro_rules! impl_response_constructor {
 
 mod bank;
 mod distribution;
+#[cfg(feature = "ibc")]
 mod ibc;
 mod query_response;
 mod staking;
@@ -35,6 +36,7 @@ mod wasm;
 
 pub use bank::*;
 pub use distribution::*;
+#[cfg(feature = "ibc")]
 pub use ibc::*;
 pub use staking::*;
 pub use wasm::*;
@@ -63,7 +65,7 @@ pub enum QueryRequest<C = Empty> {
         /// this is the expected protobuf message type (not any), binary encoded
         data: Binary,
     },
-    #[cfg(feature = "stargate")]
+    #[cfg(feature = "ibc")]
     Ibc(IbcQuery),
     Wasm(WasmQuery),
     #[cfg(feature = "cosmwasm_2_0")]
@@ -106,7 +108,7 @@ pub struct GrpcQuery {
 /// # use schemars::JsonSchema;
 /// # use serde::{Deserialize, Serialize};
 /// #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
+/// #[cfg_attr(feature = "schemars", derive(schemars::JsonSchema))]
 /// #[serde(rename_all = "snake_case")]
 /// pub enum MyCustomQuery {
 ///     Ping {},
@@ -153,7 +155,7 @@ impl<C: CustomQuery> From<GrpcQuery> for QueryRequest<C> {
     }
 }
 
-#[cfg(feature = "stargate")]
+#[cfg(feature = "ibc")]
 impl<C: CustomQuery> From<IbcQuery> for QueryRequest<C> {
     fn from(msg: IbcQuery) -> Self {
         QueryRequest::Ibc(msg)

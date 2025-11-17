@@ -30,8 +30,8 @@ cosmwasm-std = { path = "../../packages/std", default-features = false, features
 ] }
 schemars = "0.8.12"
 serde = { version = "1.0.103", default-features = false, features = ["derive"] }
-sha2 = "0.10"
-thiserror = "1.0.26"
+sha2 = { workspace = true }
+thiserror = { version = "2", default-features = false }
 
 [dev-dependencies]
 cosmwasm-vm = { path = "../../packages/vm", default-features = false }

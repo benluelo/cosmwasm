@@ -5,10 +5,10 @@
 /// for details.
 #[cfg(target_arch = "wasm32")]
 pub fn install_panic_handler() {
-    use super::imports::handle_panic;
-    std::panic::set_hook(Box::new(|info| {
-        // E.g. "panicked at 'oh no (a = 3)', src/contract.rs:51:5"
-        let full_message = info.to_string();
-        handle_panic(&full_message);
-    }));
+    // use super::imports::handle_panic;
+    // std::panic::set_hook(Box::new(|info| {
+    //     // E.g. "panicked at 'oh no (a = 3)', src/contract.rs:51:5"
+    //     let full_message = info.to_string();
+    //     handle_panic(&full_message);
+    // }));
 }

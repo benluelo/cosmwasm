@@ -1,3 +1,5 @@
+use alloc::string::String;
+
 use crate::{
     to_json_string, Coin, IbcCallbackRequest, IbcDstCallback, IbcMsg, IbcSrcCallback, IbcTimeout,
 };

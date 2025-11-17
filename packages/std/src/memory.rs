@@ -1,3 +1,4 @@
+use alloc::boxed::Box;
 use alloc::vec::Vec;
 use core::{any::TypeId, marker::PhantomData, mem, ops::Deref, slice};
 

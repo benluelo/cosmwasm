@@ -1,4 +1,5 @@
 use crate::StdError;
+use alloc::vec::Vec;
 use serde::{Deserialize, Serialize};
 
 /// A record of a key-value storage that is created through an iterator API.

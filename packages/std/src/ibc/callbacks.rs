@@ -1,6 +1,8 @@
 //! This module contains types for the IBC callbacks defined in
 //! [ADR-8](https://github.com/cosmos/ibc-go/blob/main/docs/architecture/adr-008-app-caller-cbs.md).
 
+use alloc::string::String;
+
 use serde::{Deserialize, Serialize};
 
 use crate::{Addr, IbcAcknowledgement, IbcPacket, Uint64};

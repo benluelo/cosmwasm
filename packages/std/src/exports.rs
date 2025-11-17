@@ -7,18 +7,21 @@
 //! and `do_sudo` should be wrapped with a extern "C" entry point including
 //! the contract-specific function pointer. This is done via the `#[entry_point]`
 //! macro attribute from cosmwasm-derive.
+use alloc::string::ToString;
 use alloc::vec::Vec;
 use core::marker::PhantomData;
 
 use serde::de::DeserializeOwned;
 
 use crate::deps::OwnedDeps;
+#[cfg(feature = "ibc")]
 use crate::ibc::{IbcBasicResponse, IbcDestinationCallbackMsg, IbcSourceCallbackMsg};
-#[cfg(feature = "stargate")]
+#[cfg(all(feature = "stargate", feature = "ibc"))]
 use crate::ibc::{
     IbcChannelCloseMsg, IbcChannelConnectMsg, IbcPacketAckMsg, IbcPacketReceiveMsg,
     IbcPacketTimeoutMsg, IbcReceiveResponse,
 };
+#[cfg(feature = "ibc")]
 use crate::ibc::{IbcChannelOpenMsg, IbcChannelOpenResponse};
 use crate::imports::{ExternalApi, ExternalQuerier, ExternalStorage};
 use crate::memory::{Owned, Region};
@@ -231,6 +234,7 @@ where
 /// - `M`: message type for request
 /// - `C`: custom response message type (see CosmosMsg)
 /// - `E`: error type for responses
+#[cfg(feature = "ibc")]
 pub fn do_sudo<Q, M, C, E>(
     sudo_fn: &dyn Fn(DepsMut<Q>, Env, M) -> Result<Response<C>, E>,
     env_ptr: u32,
@@ -309,7 +313,7 @@ where
 ///
 /// - `Q`: custom query type (see QueryRequest)
 /// - `E`: error type for responses
-#[cfg(feature = "stargate")]
+#[cfg(all(feature = "stargate", feature = "ibc"))]
 pub fn do_ibc_channel_open<Q, E>(
     contract_fn: &dyn Fn(DepsMut<Q>, Env, IbcChannelOpenMsg) -> Result<IbcChannelOpenResponse, E>,
     env_ptr: u32,
@@ -336,7 +340,7 @@ where
 /// - `Q`: custom query type (see QueryRequest)
 /// - `C`: custom response message type (see CosmosMsg)
 /// - `E`: error type for responses
-#[cfg(feature = "stargate")]
+#[cfg(all(feature = "stargate", feature = "ibc"))]
 pub fn do_ibc_channel_connect<Q, C, E>(
     contract_fn: &dyn Fn(DepsMut<Q>, Env, IbcChannelConnectMsg) -> Result<IbcBasicResponse<C>, E>,
     env_ptr: u32,
@@ -364,7 +368,7 @@ where
 /// - `Q`: custom query type (see QueryRequest)
 /// - `C`: custom response message type (see CosmosMsg)
 /// - `E`: error type for responses
-#[cfg(feature = "stargate")]
+#[cfg(all(feature = "stargate", feature = "ibc"))]
 pub fn do_ibc_channel_close<Q, C, E>(
     contract_fn: &dyn Fn(DepsMut<Q>, Env, IbcChannelCloseMsg) -> Result<IbcBasicResponse<C>, E>,
     env_ptr: u32,
@@ -393,7 +397,7 @@ where
 /// - `Q`: custom query type (see QueryRequest)
 /// - `C`: custom response message type (see CosmosMsg)
 /// - `E`: error type for responses
-#[cfg(feature = "stargate")]
+#[cfg(all(feature = "stargate", feature = "ibc"))]
 pub fn do_ibc_packet_receive<Q, C, E>(
     contract_fn: &dyn Fn(DepsMut<Q>, Env, IbcPacketReceiveMsg) -> Result<IbcReceiveResponse<C>, E>,
     env_ptr: u32,
@@ -422,7 +426,7 @@ where
 /// - `Q`: custom query type (see QueryRequest)
 /// - `C`: custom response message type (see CosmosMsg)
 /// - `E`: error type for responses
-#[cfg(feature = "stargate")]
+#[cfg(all(feature = "stargate", feature = "ibc"))]
 pub fn do_ibc_packet_ack<Q, C, E>(
     contract_fn: &dyn Fn(DepsMut<Q>, Env, IbcPacketAckMsg) -> Result<IbcBasicResponse<C>, E>,
     env_ptr: u32,
@@ -452,7 +456,7 @@ where
 /// - `Q`: custom query type (see QueryRequest)
 /// - `C`: custom response message type (see CosmosMsg)
 /// - `E`: error type for responses
-#[cfg(feature = "stargate")]
+#[cfg(all(feature = "stargate", feature = "ibc"))]
 pub fn do_ibc_packet_timeout<Q, C, E>(
     contract_fn: &dyn Fn(DepsMut<Q>, Env, IbcPacketTimeoutMsg) -> Result<IbcBasicResponse<C>, E>,
     env_ptr: u32,
@@ -473,6 +477,7 @@ where
     Region::from_vec(v).to_heap_ptr() as u32
 }
 
+#[cfg(feature = "ibc")]
 pub fn do_ibc_source_callback<Q, C, E>(
     contract_fn: &dyn Fn(DepsMut<Q>, Env, IbcSourceCallbackMsg) -> Result<IbcBasicResponse<C>, E>,
     env_ptr: u32,
@@ -493,6 +498,7 @@ where
     Region::from_vec(v).to_heap_ptr() as u32
 }
 
+#[cfg(feature = "ibc")]
 pub fn do_ibc_destination_callback<Q, C, E>(
     contract_fn: &dyn Fn(
         DepsMut<Q>,
@@ -610,6 +616,7 @@ where
     migrate_with_info_fn(deps.as_mut(), env, msg, migrate_info).into()
 }
 
+#[cfg(feature = "ibc")]
 fn _do_sudo<Q, M, C, E>(
     sudo_fn: &dyn Fn(DepsMut<Q>, Env, M) -> Result<Response<C>, E>,
     env_ptr: *mut Region<Owned>,
@@ -671,6 +678,7 @@ where
     query_fn(deps.as_ref(), env, msg).into()
 }
 
+#[cfg(all(feature = "stargate", feature = "ibc"))]
 fn _do_ibc_channel_open<Q, E>(
     contract_fn: &dyn Fn(DepsMut<Q>, Env, IbcChannelOpenMsg) -> Result<IbcChannelOpenResponse, E>,
     env_ptr: *mut Region<Owned>,
@@ -690,7 +698,7 @@ where
     contract_fn(deps.as_mut(), env, msg).into()
 }
 
-#[cfg(feature = "stargate")]
+#[cfg(all(feature = "stargate", feature = "ibc"))]
 fn _do_ibc_channel_connect<Q, C, E>(
     contract_fn: &dyn Fn(DepsMut<Q>, Env, IbcChannelConnectMsg) -> Result<IbcBasicResponse<C>, E>,
     env_ptr: *mut Region<Owned>,
@@ -711,7 +719,7 @@ where
     contract_fn(deps.as_mut(), env, msg).into()
 }
 
-#[cfg(feature = "stargate")]
+#[cfg(all(feature = "stargate", feature = "ibc"))]
 fn _do_ibc_channel_close<Q, C, E>(
     contract_fn: &dyn Fn(DepsMut<Q>, Env, IbcChannelCloseMsg) -> Result<IbcBasicResponse<C>, E>,
     env_ptr: *mut Region<Owned>,
@@ -732,7 +740,7 @@ where
     contract_fn(deps.as_mut(), env, msg).into()
 }
 
-#[cfg(feature = "stargate")]
+#[cfg(all(feature = "stargate", feature = "ibc"))]
 fn _do_ibc_packet_receive<Q, C, E>(
     contract_fn: &dyn Fn(DepsMut<Q>, Env, IbcPacketReceiveMsg) -> Result<IbcReceiveResponse<C>, E>,
     env_ptr: *mut Region<Owned>,
@@ -753,7 +761,7 @@ where
     contract_fn(deps.as_mut(), env, msg).into()
 }
 
-#[cfg(feature = "stargate")]
+#[cfg(all(feature = "stargate", feature = "ibc"))]
 fn _do_ibc_packet_ack<Q, C, E>(
     contract_fn: &dyn Fn(DepsMut<Q>, Env, IbcPacketAckMsg) -> Result<IbcBasicResponse<C>, E>,
     env_ptr: *mut Region<Owned>,
@@ -774,7 +782,7 @@ where
     contract_fn(deps.as_mut(), env, msg).into()
 }
 
-#[cfg(feature = "stargate")]
+#[cfg(all(feature = "stargate", feature = "ibc"))]
 fn _do_ibc_packet_timeout<Q, C, E>(
     contract_fn: &dyn Fn(DepsMut<Q>, Env, IbcPacketTimeoutMsg) -> Result<IbcBasicResponse<C>, E>,
     env_ptr: *mut Region<Owned>,
@@ -795,6 +803,7 @@ where
     contract_fn(deps.as_mut(), env, msg).into()
 }
 
+#[cfg(feature = "ibc")]
 fn _do_ibc_source_callback<Q, C, E>(
     contract_fn: &dyn Fn(DepsMut<Q>, Env, IbcSourceCallbackMsg) -> Result<IbcBasicResponse<C>, E>,
     env_ptr: *mut Region<Owned>,
@@ -815,6 +824,7 @@ where
     contract_fn(deps.as_mut(), env, msg).into()
 }
 
+#[cfg(feature = "ibc")]
 fn _do_ibc_destination_callback<Q, C, E>(
     contract_fn: &dyn Fn(
         DepsMut<Q>,

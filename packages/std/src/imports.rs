@@ -1,3 +1,6 @@
+use alloc::boxed::Box;
+use alloc::string::String;
+use alloc::string::ToString;
 use alloc::vec::Vec;
 
 use crate::import_helpers::{from_high_half, from_low_half};

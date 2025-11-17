@@ -1,12 +1,28 @@
-#[cfg(not(feature = "std"))]
-core::compile_error!(
-    r#"Please enable `cosmwasm-std`'s `std` feature, as we might move existing functionality to that feature in the future.
-Builds without the std feature are currently not expected to work. If you need no_std support see #1484.
-"#
-);
+#![cfg_attr(not(any(feature = "std", test)), no_std)]
+#![allow(mismatched_lifetime_syntaxes, clippy::manual_is_multiple_of)]
 
 #[macro_use]
 extern crate alloc;
+
+cfg_if::cfg_if! {
+    if #[cfg(target_arch = "wasm32")] {
+        cfg_if::cfg_if! {
+            if #[cfg(feature = "global_allocator")] {
+                #[global_allocator]
+                static ALLOC: mini_alloc::MiniAlloc = mini_alloc::MiniAlloc::INIT;
+            }
+        }
+
+        cfg_if::cfg_if! {
+            if #[cfg(feature = "panic_handler")] {
+                #[panic_handler]
+                fn panic(_info: &core::panic::PanicInfo) -> ! {
+                    loop {}
+                }
+            }
+        }
+    }
+}
 
 // Exposed on all platforms
 
@@ -23,12 +39,14 @@ mod encoding;
 mod errors;
 mod forward_ref;
 mod hex_binary;
+#[cfg(feature = "ibc")]
 mod ibc;
 mod import_helpers;
 #[cfg(feature = "iterator")]
 mod iterator;
 mod math;
 mod metadata;
+#[cfg(feature = "rmp")]
 mod msgpack;
 mod never;
 mod pagination;
@@ -66,7 +84,9 @@ pub use crate::errors::{
     SystemError, VerificationError,
 };
 pub use crate::hex_binary::HexBinary;
+#[cfg(feature = "ibc")]
 pub use crate::ibc::IbcChannelOpenResponse;
+#[cfg(feature = "ibc")]
 pub use crate::ibc::{
     Ibc3ChannelOpenResponse, IbcAckCallbackMsg, IbcAcknowledgement, IbcBasicResponse,
     IbcCallbackRequest, IbcChannel, IbcChannelCloseMsg, IbcChannelConnectMsg, IbcChannelOpenMsg,
@@ -83,18 +103,21 @@ pub use crate::math::{
     SignedDecimalRangeExceeded, Uint128, Uint256, Uint512, Uint64,
 };
 pub use crate::metadata::{DenomMetadata, DenomUnit};
+#[cfg(feature = "rmp")]
 pub use crate::msgpack::{from_msgpack, to_msgpack_binary, to_msgpack_vec};
 pub use crate::never::Never;
 pub use crate::pagination::PageRequest;
 pub use crate::query::{
     AllBalanceResponse, AllDelegationsResponse, AllDenomMetadataResponse, AllValidatorsResponse,
-    BalanceResponse, BankQuery, BondedDenomResponse, ChannelResponse, CodeInfoResponse,
-    ContractInfoResponse, CustomQuery, DecCoin, Delegation, DelegationResponse,
-    DelegationRewardsResponse, DelegationTotalRewardsResponse, DelegatorReward,
-    DelegatorValidatorsResponse, DelegatorWithdrawAddressResponse, DenomMetadataResponse,
-    DistributionQuery, FeeEnabledChannelResponse, FullDelegation, GrpcQuery, IbcQuery,
-    ListChannelsResponse, PortIdResponse, QueryRequest, StakingQuery, SupplyResponse, Validator,
-    ValidatorResponse, WasmQuery,
+    BalanceResponse, BankQuery, BondedDenomResponse, CodeInfoResponse, ContractInfoResponse,
+    CustomQuery, DecCoin, Delegation, DelegationResponse, DelegationRewardsResponse,
+    DelegationTotalRewardsResponse, DelegatorReward, DelegatorValidatorsResponse,
+    DelegatorWithdrawAddressResponse, DenomMetadataResponse, DistributionQuery, FullDelegation,
+    GrpcQuery, QueryRequest, StakingQuery, SupplyResponse, Validator, ValidatorResponse, WasmQuery,
+};
+#[cfg(feature = "ibc")]
+pub use crate::query::{
+    ChannelResponse, FeeEnabledChannelResponse, IbcQuery, ListChannelsResponse, PortIdResponse,
 };
 #[cfg(all(feature = "stargate", feature = "cosmwasm_1_2"))]
 pub use crate::results::WeightedVoteOption;
@@ -140,21 +163,19 @@ mod memory; // Used by exports and imports only. This assumes pointers are 32 bi
 #[cfg(all(feature = "cosmwasm_2_2", target_arch = "wasm32"))]
 pub use crate::exports::do_migrate_with_info;
 #[cfg(target_arch = "wasm32")]
+pub use crate::exports::{do_execute, do_instantiate, do_migrate, do_query, do_reply};
+#[cfg(all(feature = "ibc", target_arch = "wasm32"))]
 pub use crate::exports::{
-    do_execute, do_ibc_destination_callback, do_ibc_source_callback, do_instantiate, do_migrate,
-    do_query, do_reply, do_sudo,
-};
-#[cfg(all(feature = "stargate", target_arch = "wasm32"))]
-pub use crate::exports::{
-    do_ibc_channel_close, do_ibc_channel_connect, do_ibc_channel_open, do_ibc_packet_ack,
-    do_ibc_packet_receive, do_ibc_packet_timeout,
+    do_ibc_channel_close, do_ibc_channel_connect, do_ibc_channel_open, do_ibc_destination_callback,
+    do_ibc_packet_ack, do_ibc_packet_receive, do_ibc_packet_timeout, do_ibc_source_callback,
+    do_sudo,
 };
 #[cfg(target_arch = "wasm32")]
 pub use crate::imports::{ExternalApi, ExternalQuerier, ExternalStorage};
 
 /// Exposed for testing only
 /// Both unit tests and integration tests are compiled to native code, so everything in here does not need to compile to Wasm.
-#[cfg(not(target_arch = "wasm32"))]
+#[cfg(any(not(target_arch = "wasm32"), feature = "std"))]
 pub mod testing;
 
 pub use cosmwasm_core::{BLS12_381_G1_GENERATOR, BLS12_381_G2_GENERATOR};
